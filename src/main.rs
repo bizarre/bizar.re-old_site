@@ -75,7 +75,7 @@ impl Component for Model {
     let settings = self.props.settings.clone();
    
     html! {
-      <main class=classes!("h-screen", "w-screen", "flex", "items-center", "justify-center")>
+      <main class=classes!("h-screen", "w-screen", "flex", "p-4", "md:w-2/3", "md:m-auto", "md:px-0", "md:pt-40")>
       { if settings.is_some() { 
           html! {
           <AppRouter
