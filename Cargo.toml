@@ -10,3 +10,5 @@ edition = "2018"
 yew = {git = "https://github.com/yewstack/yew"}
 yew-functional = {git = "https://github.com/yewstack/yew"}
 yew-functional-macro = {git = "https://github.com/yewstack/yew"}
+yew-router = {git = "https://github.com/yewstack/yew"}
+yew-router-macro = {git = "https://github.com/yewstack/yew"}

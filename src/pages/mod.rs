@@ -1,3 +1,5 @@
-mod index;
+mod home;
+mod not_found;
 
-pub type Index = index::Index;
+pub type Home = home::Home;
+pub type NotFound = not_found::NotFound;
