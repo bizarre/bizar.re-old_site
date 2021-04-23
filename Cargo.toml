@@ -7,4 +7,6 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-yew = "0.17.4"
+yew = {git = "https://github.com/yewstack/yew"}
+yew-functional = {git = "https://github.com/yewstack/yew"}
+yew-functional-macro = {git = "https://github.com/yewstack/yew"}
