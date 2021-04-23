@@ -12,3 +12,9 @@ yew-functional = {git = "https://github.com/yewstack/yew"}
 yew-functional-macro = {git = "https://github.com/yewstack/yew"}
 yew-router = {git = "https://github.com/yewstack/yew"}
 yew-router-macro = {git = "https://github.com/yewstack/yew"}
+yew-services = {git = "https://github.com/yewstack/yew"}
+config = "0.11"
+serde_derive = "1.0.125"
+serde = "1.0.125"
+serde_yaml = "0.8.17"
+anyhow = "1.0.40"

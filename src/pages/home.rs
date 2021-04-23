@@ -1,9 +1,18 @@
 use yew::prelude::*;
 use yew_functional::function_component;
 
+#[derive(Properties, Clone, PartialEq)]
+pub struct Props {
+  pub settings: crate::settings::Settings
+}
+
 #[function_component(Home)]
-pub fn home() -> Html {
+pub fn home(props: &Props) -> Html {
   html! {
-    <h1> {"Hello"} </h1>
+    <>
+      <div>
+        <h1 class=classes!("lowercase", "font-medium")>{ &props.settings.name }</h1>
+      </div>
+    </>
   }
 }

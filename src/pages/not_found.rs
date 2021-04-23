@@ -6,8 +6,8 @@ pub struct Props {
 }
 
 #[function_component(NotFound)]
-pub fn not_found(props: &Props) -> Html {
+pub fn not_found(_props: &Props) -> Html {
   html! {
-    <h1> { props.route.as_ref().unwrap() } </h1>
+    <h1> { "404" } </h1>
   }
 }
