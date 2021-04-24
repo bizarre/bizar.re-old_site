@@ -21,6 +21,7 @@ jobs:
           version: 'latest'
       - run: cargo check
       - run: ./trunk build
+      - run: touch dist/.nojekyll
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
