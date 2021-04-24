@@ -22,7 +22,7 @@ jobs:
       - run: cargo check
       - run: ./trunk build
       - run: touch dist/.nojekyll
-      - run: curl https://raw.githubusercontent.com/rafgraph/spa-github-pages/gh-pages/404.html -o 404.html
+      - run: curl https://raw.githubusercontent.com/rafgraph/spa-github-pages/gh-pages/404.html -o dist/404.html
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
