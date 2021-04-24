@@ -1,8 +1,38 @@
 <!DOCTYPE html><html lang="en" hidden=""><head>
     <meta charset="utf-8">
     <title>bizar.re</title>
+    <!-- Start Single Page Apps for GitHub Pages -->
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      // This script checks to see if a redirect is present in the query string,
+      // converts it back into the correct url and adds it to the
+      // browser's history using window.history.replaceState(...),
+      // which won't cause the browser to attempt to load the new url.
+      // When the single page app is loaded further down in this file,
+      // the correct url will be waiting in the browser's history for
+      // the single page app to route accordingly.
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      })(window.location);
+    </script>
+
     <script type="module" src="https://cdn.skypack.dev/twind/shim"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Recursive:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/typography@0.2.x/dist/typography.min.css">
     
@@ -10,7 +40,7 @@
     
     <style>
       main {
-        font-family: 'Recursive', monospace;
+        font-family: "Recursive", monospace;
       }
     </style>
   
@@ -18,5 +48,4 @@
 <link rel="modulepreload" href="/index-560466e6b0db667d.js"></head>
   <body>
 
-  
 <script type="module">import init from '/index-560466e6b0db667d.js';init('/index-560466e6b0db667d_bg.wasm');</script></body></html>
