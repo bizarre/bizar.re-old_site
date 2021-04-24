@@ -1,6 +1,7 @@
 mod settings;
 mod pages;
 mod router;
+mod components;
 
 use yew::prelude::*;
 use yew_router::{route::Route, switch::Permissive};
@@ -87,6 +88,10 @@ impl Component for Model {
             
                   AppRoute::PageNotFound(Permissive(route)) => {
                     html! { <pages::NotFound route=route /> }
+                  }
+
+                  AppRoute::JournalEntry(date) => {
+                    html! { <pages::JournalEntry date=date /> }
                   }
                 }
               })

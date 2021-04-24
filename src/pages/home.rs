@@ -1,6 +1,6 @@
 use yew::prelude::*;
 use yew_functional::function_component;
-
+use crate::components::journal::List;
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
   pub settings: crate::settings::Settings
@@ -17,6 +17,7 @@ pub fn home(props: &Props) -> Html {
             <div class=classes!("cursor-default")> { line }</div>
           }).collect::<Html>() }
         </ul>
+        <List />
       </div>
     </>
   }

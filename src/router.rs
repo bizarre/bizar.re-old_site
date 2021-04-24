@@ -5,8 +5,12 @@ pub enum AppRoute {
   #[at = "/page-not-found"]
   PageNotFound(Permissive<String>),
 
+  #[at = "/{date}"]
+  JournalEntry(String),
+
   #[at = "/!"]
   Home
 }
 
 pub type AppRouter = Router<AppRoute>;
+pub type AppAnchor = RouterAnchor<AppRoute>;
