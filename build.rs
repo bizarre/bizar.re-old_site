@@ -7,6 +7,7 @@ fn main() -> io::Result<()> {
         .collect::<Result<Vec<_>, io::Error>>()?;
 
   paths.sort();
+  paths.reverse();
 
   println!("cargo:rerun-if-changed=content"); 
   println!("cargo:rerun-if-changed=build.rs");

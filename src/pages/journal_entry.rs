@@ -120,23 +120,32 @@ impl Component for JournalEntry {
       .unwrap()
       .document()
       .unwrap()
-      .create_element("div")
+      .create_element("article")
       .unwrap();
 
       div.set_inner_html(body);
+      div.set_class_name("prose");
 
       let node = Node::from(div);
       let vnode = VNode::VRef(node);
 
       html! {
-        <article class=classes!("prose")>
-          <>{ vnode }</>
-          <AppAnchor classes="w-full hover:bg-black hover:text-white" route=AppRoute::Home> { "\u{2190} Return" }</AppAnchor>
-        </article>
+        <div>
+          <header class=classes!("flex", "items-center", "justify-between", "mb-4")>
+            <h1 class=classes!("text-lg", "font-medium", "text-gray-400")> { &self.props.date } </h1>
+            <AppAnchor classes="hover:bg-black hover:text-white" route=AppRoute::Home> { "\u{2190} Return" }</AppAnchor>
+          </header>
+          <section>
+            <>{ vnode }</>
+          </section>
+          <footer>
+            <AppAnchor classes="hover:bg-black hover:text-white mt-6 mb-16 inline-block" route=AppRoute::Home> { "\u{2190} Return" }</AppAnchor>
+          </footer>
+        </div>
       }
     } else {
       html! {
-        <h1> { "loading" } </h1>
+        <h1> { "..." } </h1>
       }
     }
   }
