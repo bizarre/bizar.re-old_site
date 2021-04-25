@@ -128,6 +128,18 @@ impl Component for JournalEntry {
       let node = Node::from(div);
       let vnode = VNode::VRef(node);
 
+      let script = web_sys::window()
+      .unwrap()
+      .document()
+      .unwrap()
+      .create_element("script")
+      .unwrap();
+
+      script.set_inner_html("Prism.highlightAll()");
+
+      let script_node = Node::from(script);
+      let script_vnode = VNode::VRef(script_node);
+
       html! {
         <div>
           <header class=classes!("flex", "items-center", "justify-between", "mb-4")>
@@ -136,6 +148,7 @@ impl Component for JournalEntry {
           </header>
           <section>
             <>{ vnode }</>
+            <> {script_vnode} </>
           </section>
           <footer>
             <AppAnchor classes="hover:bg-black hover:text-white mt-6 mb-16 inline-block" route=AppRoute::Home> { "\u{2190} Return" }</AppAnchor>
