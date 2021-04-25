@@ -52,7 +52,7 @@ impl Component for Model {
 
 
     let _fetch = FetchService::fetch(request, link.callback(|response: Response<Text>| {
-      Msg::LoadSettings(Settings::new(response.body().as_ref().unwrap(), config::FileFormat::Yaml))
+      Msg::LoadSettings(Settings::new(response.body().as_ref().unwrap()))
     })).unwrap();
 
     let _timeout = TimeoutService::spawn(Duration::new(5, 0), link.callback(|_res| {

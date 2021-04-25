@@ -16,7 +16,9 @@ jobs:
         with:
           key: bizarre
       - run: wget -qO- https://github.com/thedodd/trunk/releases/download/v0.11.0/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
-      - uses: jetli/wasm-bindgen-action@v0.1.0
+      - run: wget -qO- https://github.com/WebAssembly/binaryen/releases/download/version_101/binaryen-version_101-x86_64-linux.tar.gz | tar -xzf-
+      - run: mv ./binary*/bin/wasm-opt /usr/local/bin/wasm-opt
+        - uses: jetli/wasm-bindgen-action@v0.1.0
         with:
           version: 'latest'
       - run: cargo check

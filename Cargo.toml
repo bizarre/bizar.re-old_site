@@ -24,19 +24,16 @@ yew-functional-macro = {git = "https://github.com/yewstack/yew"}
 yew-router = {git = "https://github.com/yewstack/yew"}
 yew-router-macro = {git = "https://github.com/yewstack/yew"}
 yew-services = {git = "https://github.com/yewstack/yew"}
-config = "0.11"
 serde_derive = "1.0.125"
 serde = "1.0.125"
 serde_yaml = "0.8.17"
 serde_json = "1.0.64"
 anyhow = "1.0.40"
-chrono = "0.4.19"
 markdown = "0.3"
 web-sys = "0.3.50"
 wee_alloc = "0.4.5"
 
 [build-dependencies]
 markdown = "0.3"
-chrono = "0.4.19"
 serde = "1.0.125"
 serde_json = "1.0.64"
