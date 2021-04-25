@@ -40,19 +40,30 @@
       href="https://fonts.googleapis.com/css2?family=Recursive:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/@tailwindcss/typography@0.2.x/dist/typography.min.css"
-    />
+
+    <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/typography@0.2.x/dist/typography.min.css" />
+
+
     <link data-trunk rel="copy-file" href="settings.yaml" />
     <link data-trunk rel="copy-file" href=".journal.json" />
     <link data-trunk rel="copy-dir" href="content" />
-    <link data-trunk rel="rust" data-wasm-opt="z" />
+    <link data-trunk rel="rust" data-wasm-opt="z" /> 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <style>
       main {
         font-family: "Recursive", monospace;
       }
+
+      .prose pre {
+        background-color: #2d3748 !important;
+        border-radius: .375rem !important;
+        border: none !important;
+      }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
   </head>
-  <body></body>
+  <body>
+
+  </body>
 </html>
