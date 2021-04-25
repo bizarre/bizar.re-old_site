@@ -11,6 +11,13 @@ use yew::format::{Nothing, Text};
 use std::time::Duration;
 
 use router::{AppRouter, AppRoute};
+
+use wee_alloc;
+
+// Use `wee_alloc` as the global allocator.
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
   pub settings: Option<Settings>
