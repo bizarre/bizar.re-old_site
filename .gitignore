@@ -1,4 +1,5 @@
 /target
 /dist
 .journal.json
+.sketches.json
 .DS_Store
