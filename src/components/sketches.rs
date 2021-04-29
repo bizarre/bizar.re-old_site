@@ -7,22 +7,18 @@ use yew_functional::function_component;
 use crate::router::{AppAnchor, AppRoute};
 
 #[derive(Deserialize, Clone, PartialEq)]
-pub struct JournalEntry {
-  pub date: String,
-  #[serde(rename = "_path")]
-  pub path: String
-}
+pub struct SketchDef(String);
 
 pub struct List {
   link: ComponentLink<Self>,
   error: bool,
-  entries: Vec<JournalEntry>,
+  sketches: Vec<SketchDef>,
   _fetch: FetchTask,
   _timeout: TimeoutTask
 }
 
 pub enum Msg {
-  Init(Vec<JournalEntry>),
+  Init(Vec<SketchDef>),
   Error
 }
 
@@ -31,7 +27,7 @@ impl Component for List {
   type Properties = ();
 
   fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
-    let request = Request::get("/.journal.json")
+    let request = Request::get("/.sketches.json")
     .body(Nothing)
     .expect("Failed to build request.");
 
@@ -43,13 +39,13 @@ impl Component for List {
       Msg::Error
     }));
 
-    Self { link, error: false, entries: Vec::new(), _fetch, _timeout }
+    Self { link, error: false, sketches: Vec::new(), _fetch, _timeout }
   }
 
   fn update(&mut self, msg: Self::Message) -> ShouldRender {
     match msg {
-      Msg::Init(entries) => {
-        self.entries = entries;
+      Msg::Init(sketches) => {
+        self.sketches = sketches;
         true
       },
       Msg::Error => {
@@ -64,32 +60,33 @@ impl Component for List {
   }
 
   fn view(&self) -> Html {
-    let entries = &self.entries;
+    let sketches = &self.sketches;
    
     html!{
       <div>
-        <h1 class=classes!("lowercase", "mt-4", "font-medium", "text-lg")>{ "Journal" }</h1>
+        <h1 class=classes!("lowercase", "mt-4", "font-medium", "text-lg")>{ "Sketches" }</h1>
         <ul class=classes!("mt-2", "grid", "grid-cols-2", "md:grid-cols-4", "gap-4")>
-          { entries.iter().map(|entry| html!{ <Stub entry=entry /> }).collect::<Html>() }
+        { sketches.iter().map(|sketch| html!{ <Stub sketch=sketch /> }).collect::<Html>() }
         </ul>
       </div>
-    }
+    } 
   }
 
 }
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct StubProps {
-  entry: JournalEntry
+  sketch: SketchDef
 }
 
 #[function_component(Stub)]
 pub fn stub(props: &StubProps) -> Html {
-  let entry = props.entry.clone();
+  let sketch = props.sketch.clone();
+  let SketchDef(name) = sketch;
   html! {
     <li> 
-      <AppAnchor route=AppRoute::JournalEntry(entry.date.to_owned()) classes="hover:bg-black hover:text-white">
-        { entry.date }
+      <AppAnchor route=AppRoute::Sketch(name.to_owned()) classes="hover:bg-black hover:text-white">
+        { name }
       </AppAnchor>
     </li>
   }
