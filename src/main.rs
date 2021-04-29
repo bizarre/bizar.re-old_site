@@ -100,6 +100,10 @@ impl Component for Model {
                   AppRoute::JournalEntry(date) => {
                     html! { <pages::JournalEntry date=date /> }
                   }
+
+                  AppRoute::Sketch(sketch) => {
+                    html! { <pages::Sketch sketch=sketch /> }
+                  }
                 }
               })
               redirect=AppRouter::redirect(|route: Route| {

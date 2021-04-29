@@ -2,15 +2,37 @@ use std::{fs, io};
 use std::collections::HashMap;
 
 fn main() -> io::Result<()> {
-  let mut paths = fs::read_dir("content")?
+  println!("cargo:rerun-if-changed=content"); 
+  println!("cargo:rerun-if-changed=build.rs");
+  
+  plot_journal_entries()?;
+  plot_sketches()?;
+
+  Ok(())
+}
+
+
+fn plot_sketches() -> io::Result<()> {
+  let mut paths = fs::read_dir("content/sketches")?
+        .map(|res| res.map(|e| e.path()))
+        .collect::<Result<Vec<_>, io::Error>>()?;
+
+  paths.sort_by(|f1, f2| fs::metadata(f2).unwrap().created().unwrap().cmp(&fs::metadata(f1).unwrap().created().unwrap()));
+
+  let names = paths.iter().map(|path| path.as_path().file_name().unwrap().to_str().unwrap()).collect::<Vec<&str>>();
+
+  serde_json::to_writer(&fs::File::create(".sketches.json")?, &names).unwrap();
+
+  Ok(())
+}
+
+fn plot_journal_entries() -> io::Result<()> {
+  let mut paths = fs::read_dir("content/journal")?
         .map(|res| res.map(|e| e.path()))
         .collect::<Result<Vec<_>, io::Error>>()?;
 
   paths.sort();
   paths.reverse();
-
-  println!("cargo:rerun-if-changed=content"); 
-  println!("cargo:rerun-if-changed=build.rs");
 
   let mut entries: Vec<HashMap<String, String>> = vec![];
   let mut keys = vec![];

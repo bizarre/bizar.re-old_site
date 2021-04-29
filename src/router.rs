@@ -5,6 +5,9 @@ pub enum AppRoute {
   #[at = "/page-not-found"]
   PageNotFound(Permissive<String>),
 
+  #[at = "/s/{sketch}"]
+  Sketch(String),
+
   #[at = "/{date}"]
   JournalEntry(String),
 

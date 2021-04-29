@@ -1,0 +1,1 @@
+example sketch stolen from p5.js getting started thingie
