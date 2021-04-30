@@ -29,7 +29,7 @@ pub fn home(props: &Props) -> Html {
             </div>
           </div>
         </div>
-        <div class=classes!("grid", "grid-cols-1", "gap-0", "md:grid-cols-2", "md:gap-8", "mt-4")>       
+        <div class=classes!("grid", "grid-cols-1", "gap-0", "md:grid-cols-2", "md:gap-8", "mt-4")>
           <crate::components::journal::List />
           <crate::components::sketches::List />
         </div>
