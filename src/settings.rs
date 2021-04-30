@@ -3,7 +3,8 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize, Clone, PartialEq)]
 pub struct Settings {
   pub name: String,
-  pub status: Vec<String>
+  pub status: Option<Vec<String>>,
+  pub bio: String
 }
 
 impl Settings {
