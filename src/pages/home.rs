@@ -1,5 +1,7 @@
 use yew::prelude::*;
 use yew_functional::function_component;
+use crate::router::{AppAnchor, AppRoute};
+
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
   pub settings: crate::settings::Settings
@@ -11,7 +13,10 @@ pub fn home(props: &Props) -> Html {
     <>
       <div>
         <div>
-          <h1 class=classes!("lowercase", "font-medium", "text-lg")>{ &props.settings.name }</h1>
+          <div class=classes!("flex", "justify-between", "items-center")>
+            <h1 class=classes!("lowercase", "font-medium", "text-lg", "flex", "items-center")>{ &props.settings.name }</h1>
+            <AppAnchor classes="hover:bg-black hover:text-white text-md ml-1 opacity-75" route=AppRoute::About> { "/about-me" }</AppAnchor>
+          </div>
           <div class=classes!("mt-4", "flex", "flex-col", "md:flex-row")>
           { if let Some(status) = &props.settings.status {
             html! {

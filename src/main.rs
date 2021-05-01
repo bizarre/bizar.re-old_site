@@ -97,6 +97,10 @@ impl Component for Model {
                     html! { <pages::NotFound route=route /> }
                   }
 
+                  AppRoute::About => {
+                    html! { <pages::About /> }
+                  }
+
                   AppRoute::JournalEntry(date) => {
                     html! { <pages::JournalEntry date=date /> }
                   }

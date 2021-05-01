@@ -157,7 +157,7 @@ impl Component for Sketch {
           <div>
             <header class=classes!("flex", "items-center", "justify-between", "mb-4")>
               <h1 class=classes!("text-lg", "font-medium", "text-gray-400")> { &self.props.sketch } </h1>
-              <AppAnchor classes="hover:bg-black hover:text-white" route=AppRoute::Home> { "\u{2190} Return" }</AppAnchor>
+              <AppAnchor classes="hover:bg-black hover:text-white" route=AppRoute::Home> { "\u{2190} return" }</AppAnchor>
             </header>
             <section>
               <> { vnode } </>
@@ -165,7 +165,6 @@ impl Component for Sketch {
               <> { iframe_vnode } </>
             </section>
             <footer class=classes!("flex", "justify-between", "items-center", "mt-6", "mb-16")>
-              <AppAnchor classes="hover:bg-black hover:text-white inline-block" route=AppRoute::Home> { "\u{2190} Return" }</AppAnchor>
               // todo grab the github link from settings.yaml
               <a class=classes!("hover:bg-black", "hover:text-white", "lowercase") href={ &format!("https://github.com/bizarre/bizarre/blob/master/content/sketches/{}/sketch.js", &self.props.sketch) }> { "View source on GitHub" } </a>
               </footer>
