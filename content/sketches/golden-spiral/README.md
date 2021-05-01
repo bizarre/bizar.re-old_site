@@ -1,0 +1,1 @@
+kind of [golden spiral](https://en.wikipedia.org/wiki/Golden_spiral)
