@@ -17,7 +17,7 @@ fn plot_sketches() -> io::Result<()> {
         .map(|res| res.map(|e| e.path()))
         .collect::<Result<Vec<_>, io::Error>>()?;
 
-  paths.sort_by(|f1, f2| fs::metadata(f2).unwrap().created().unwrap().cmp(&fs::metadata(f1).unwrap().created().unwrap()));
+  paths.sort_by(|f1, f2| fs::metadata(f1).unwrap().created().unwrap().cmp(&fs::metadata(f2).unwrap().created().unwrap()));
 
   let names = paths.iter().map(|path| path.as_path().file_name().unwrap().to_str().unwrap()).collect::<Vec<&str>>();
 
