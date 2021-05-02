@@ -121,7 +121,7 @@ impl Component for Model {
     let snowflake = info.git_commit_time;
    
     html! {
-      <main class=classes!("h-screen", "w-screen", "flex", "p-4", "md:w-2/3", "md:m-auto", "md:px-0", "md:pt-40", "flex-wrap")>
+      <main class=classes!("h-screen", "w-screen", "flex", "flex-col", "p-4", "md:w-2/3", "md:m-auto", "md:px-0", "md:pt-40")>
       { if settings.is_some() { 
           html! {
           <AppRouter
@@ -165,24 +165,26 @@ impl Component for Model {
       }}
       // this should probs be moved into its own component.
       // very ugly rn
-        <footer class=classes!("w-full", "cursor-default", "pb-8")>
-          <small class=classes!("text-gray-300", "block")>
-            { "built w/ \u{2764} in rust via " }
-            <a class=classes!("hover:bg-black", "hover:text-white", "underline") href={"https://github.com/yewstack/yew"}>{ "yew" }</a>
-          </small>
-          <small class=classes!("text-gray-300", "block")>
-            { "last commit " }
-            <a class=classes!("hover:bg-black", "hover:text-white", "underline") href={format!{"{}/commit/{}", info.git_remote.unwrap_or("https://github.com/bizarre/bizarre".to_owned()), info.git_commit_id}}>{ format!("[{}]", info.git_commit_id.chars().take(7).collect::<String>()) }</a>
-            { " by " }
-            <strong>{ format!("{} ({})", info.git_author_name, info.git_author_email) }</strong>
-            { " on " }
-            <span>{ date.to_date_string().as_string().unwrap() }</span>
-            { " at " }
-            <span>{ date.to_locale_time_string("en-US").as_string().unwrap() }</span>
-            { ": " }
-            <strong>{ format!("\"{}\"", info.git_commit_summary) }</strong>
-            // { format!("last commit [{}] by {} ({}) on {} at {}: '{}'", info.git_commit_id.chars().take(7).collect::<String>(), info.git_author_name, info.git_author_email, date.to_date_string().as_string().unwrap(), date.to_locale_time_string("en-US").as_string().unwrap(), info.git_commit_summary)}
-          </small>
+        <footer class=classes!("w-full", "cursor-default", "pb-8", "flex-1", "flex", "items-end")>
+          <div>
+            <small class=classes!("text-gray-300", "block")>
+              { "built w/ \u{2764} in rust via " }
+              <a class=classes!("hover:bg-black", "hover:text-white", "underline") href={"https://github.com/yewstack/yew"}>{ "yew" }</a>
+            </small>
+            <small class=classes!("text-gray-300", "block")>
+              { "latest commit " }
+              <a class=classes!("hover:bg-black", "hover:text-white", "underline") href={format!{"{}/commit/{}", info.git_remote.unwrap_or("https://github.com/bizarre/bizarre".to_owned()), info.git_commit_id}}>{ format!("[{}]", info.git_commit_id.chars().take(7).collect::<String>()) }</a>
+              { " by " }
+              <strong>{ format!("{} ({})", info.git_author_name, info.git_author_email) }</strong>
+              { " on " }
+              <span>{ date.to_date_string().as_string().unwrap() }</span>
+              { " at " }
+              <span>{ date.to_locale_time_string("en-US").as_string().unwrap() }</span>
+              { ": " }
+              <strong>{ format!("\"{}\"", info.git_commit_summary) }</strong>
+              // { format!("last commit [{}] by {} ({}) on {} at {}: '{}'", info.git_commit_id.chars().take(7).collect::<String>(), info.git_author_name, info.git_author_email, date.to_date_string().as_string().unwrap(), date.to_locale_time_string("en-US").as_string().unwrap(), info.git_commit_summary)}
+            </small>
+          </div>
         </footer>
       </main>
     }
