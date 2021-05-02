@@ -12,7 +12,7 @@ despite being a comp sci student for less than a year i have been programming si
 * low level goodness
   * i have spent so much time in the higher level areas of programming that i am more and more facinated by things lower level. i want to start working on my own kernel in rust soon.
 
-i also really enjoy product design, being involved in all stages of the process, and seeing stuff to fruition. my early programming experience is specifically app development related, where users have to install my software. when i got into web development i was really intrigued by just how much more accessible my programs became, especially with the ability to decouple app logic from frontend logic. i love building in the web, even more so when i can mess around with the cutting edge.
+i also really enjoy product design, being involved in all stages of the process, and seeing stuff to fruition. when i got into web development i was really intrigued by just how much more accessible my programs became, especially with the ability to decouple app logic from frontend logic. i love building in the web, even more so when i can mess around with the cutting edge.
 
 this site you're on right now is written in rust (understood by your browser via wasm thanks to [yew](https://github.com/yewstack/yew)) w/ tailwind, you can read a tiny bit of the technical challenges, etc [here](/042421). the source code is available [here](https://github.com/bizarre/bizarre). 
 
