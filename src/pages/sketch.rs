@@ -20,7 +20,8 @@ pub struct Sketch {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-  pub sketch: String
+  pub sketch: String,
+  pub snowflake: i64
 }
 
 pub enum Msg {
@@ -36,7 +37,7 @@ impl Component for Sketch {
   type Properties = Props;
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-    let request = Request::get("/.sketches")
+    let request = Request::get(&format!("/.sketches?{}", props.snowflake))
     .body(Nothing)
     .expect("Failed to build request.");
 
@@ -70,11 +71,11 @@ impl Component for Sketch {
       }
 
       Msg::Load => {
-        let body_request = Request::get(format!("/content/sketches/{}/README.md", self.props.sketch))
+        let body_request = Request::get(format!("/content/sketches/{}/README.md?{}", self.props.sketch, self.props.snowflake))
         .body(Nothing)
         .expect("Failed to build request.");
 
-        let script_request = Request::get(format!("/content/sketches/{}/script.js", self.props.sketch))
+        let script_request = Request::get(format!("/content/sketches/{}/script.js?{}", self.props.sketch, self.props.snowflake))
         .body(Nothing)
         .expect("Failed to build request.");
 

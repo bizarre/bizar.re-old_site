@@ -4,7 +4,8 @@ use crate::router::{AppAnchor, AppRoute};
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-  pub settings: crate::settings::Settings
+  pub settings: crate::settings::Settings,
+  pub snowflake: i64
 }
 
 #[function_component(Home)]
@@ -35,8 +36,8 @@ pub fn home(props: &Props) -> Html {
           </div>
         </div>
         <div class=classes!("grid", "grid-cols-1", "gap-0", "md:grid-cols-2", "md:gap-8", "mt-4")>
-          <crate::components::journal::List settings=&props.settings.clone() />
-          <crate::components::sketches::List settings=&props.settings.clone() />
+          <crate::components::journal::List settings=&props.settings.clone() snowflake=props.snowflake />
+          <crate::components::sketches::List settings=&props.settings.clone() snowflake=props.snowflake />
         </div>
       </div>
     </>

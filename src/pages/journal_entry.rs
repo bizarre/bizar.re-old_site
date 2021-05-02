@@ -19,7 +19,8 @@ pub struct JournalEntry {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-  pub date: String
+  pub date: String,
+  pub snowflake: i64
 }
 
 pub enum Msg {
@@ -34,7 +35,7 @@ impl Component for JournalEntry {
   type Properties = Props;
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-    let request = Request::get("/.journal")
+    let request = Request::get(&format!("/.journal?{}", props.snowflake))
     .body(Nothing)
     .expect("Failed to build request.");
 
@@ -45,7 +46,7 @@ impl Component for JournalEntry {
       for entry in entries {
         if let Some(date) = entry.get("date") {
           if date == &cloned.date.to_owned() {
-            return Msg::Load(entry.get("_path").unwrap().to_owned())
+            return Msg::Load(format!("{}?{}", entry.get("_path").unwrap().to_owned(), cloned.snowflake))
           }
         }
       }

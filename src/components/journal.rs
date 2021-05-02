@@ -29,7 +29,8 @@ pub enum Msg {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct ListProps {
-  pub settings: crate::settings::Settings
+  pub settings: crate::settings::Settings,
+  pub snowflake: i64
 }
 
 impl Component for List {
@@ -37,7 +38,7 @@ impl Component for List {
   type Properties = ListProps;
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-    let request = Request::get("/.journal")
+    let request = Request::get(&format!("/.journal?{}", props.snowflake))
     .body(Nothing)
     .expect("Failed to build request.");
 
