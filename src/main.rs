@@ -158,7 +158,7 @@ impl Component for Model {
         let date = js_sys::Date::new_0();
         date.set_time((info.git_commit_time * 1000) as f64);
         html! {
-          <footer class=classes!("w-full", "cursor-default")>
+          <footer class=classes!("w-full", "cursor-default", "pb-8")>
             <small class=classes!("text-gray-300", "block")>
               { "built w/ \u{2764} in rust via " }
               <a class=classes!("hover:bg-black", "hover:text-white", "underline") href={"https://github.com/yewstack/yew"}>{ "yew" }</a>
