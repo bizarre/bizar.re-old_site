@@ -16,6 +16,7 @@ pub struct About {
   _timeout: TimeoutTask
 }
 
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
   pub snowflake: i64
 }
@@ -27,7 +28,7 @@ pub enum Msg {
 
 impl Component for About {
   type Message = Msg;
-  type Properties = ();
+  type Properties = Props;
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
     let request = Request::get(&format!("/content/about.md?{}", props.snowflake))
