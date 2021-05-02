@@ -1,16 +1,40 @@
 use std::{fs, io};
 use std::collections::HashMap;
+use std::time::{SystemTime, UNIX_EPOCH};
+use std::fs::File;
+use std::path::Path;
+use std::io::{Read, Write};
 
 fn main() -> io::Result<()> {
   println!("cargo:rerun-if-changed=content"); 
   println!("cargo:rerun-if-changed=build.rs");
 
   
+  cache_bust()?;
   plot_build_information()?;
   plot_journal_entries()?;
   plot_sketches()?;
 
   Ok(())
+}
+
+fn cache_bust() -> io::Result<()> {
+    let current_time_millis = SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards").as_millis();
+
+    let mut file = File::open(Path::new("base.html"))?;
+    let mut data = String::new();
+    file.read_to_string(&mut data)?;
+    drop(file);
+
+    let mut replaced = data.replace(".journal", &format!(".journal?{}", current_time_millis));
+    replaced = replaced.replace(".sketches", &format!(".sketches?{}", current_time_millis));
+    replaced = replaced.replace(".build_info", &format!(".build_info?{}", current_time_millis));
+
+    // Recreate the file and dump the processed contents to it
+    let mut out = File::create(Path::new("index.html"))?;
+    out.write(replaced.as_bytes())?;
+
+    Ok(())
 }
 
 fn plot_build_information() -> io::Result<()> {
