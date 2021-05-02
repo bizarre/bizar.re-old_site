@@ -136,7 +136,7 @@ impl Component for Model {
                   }
 
                   AppRoute::About => {
-                    html! { <pages::About /> }
+                    html! { <pages::About snowflake=snowflake /> }
                   }
 
                   AppRoute::JournalEntry(date) => {

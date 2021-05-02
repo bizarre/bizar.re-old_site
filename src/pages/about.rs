@@ -16,6 +16,10 @@ pub struct About {
   _timeout: TimeoutTask
 }
 
+pub struct Props {
+  pub snowflake: i64
+}
+
 pub enum Msg {
   Apply(String),
   Error
@@ -26,7 +30,7 @@ impl Component for About {
   type Properties = ();
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-    let request = Request::get("/content/about.md")
+    let request = Request::get(&format!("/content/about.md?{}", props.snowflake))
     .body(Nothing)
     .expect("Failed to build request.");
 
