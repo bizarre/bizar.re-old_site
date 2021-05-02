@@ -14,7 +14,7 @@ despite being a comp sci student for less than a year i have been programming si
 
 i also really enjoy product design, being involved in all stages of the process, and seeing stuff to fruition. my early programming experience is specifically app development related, where users have to install my software. when i got into web development i was really intrigued by just how much more accessible my programs became, especially with the ability to decouple app logic from frontend logic. i love building in the web, even more so when i can mess around with the cutting edge.
 
-this site you're on right now is written in rust (understood by your browser via wasm ([yew](https://github.com/yewstack/yew)) w/ tailwind, you can read a tiny bit of the technical challenges, etc [here](/042421). the source code is available [here](https://github.com/bizarre/bizarre). 
+this site you're on right now is written in rust (understood by your browser via wasm thanks to [yew](https://github.com/yewstack/yew)) w/ tailwind, you can read a tiny bit of the technical challenges, etc [here](/042421). the source code is available [here](https://github.com/bizarre/bizarre). 
 
 **i will warn you that my posts are unfiltered and contain profanity**. 
 if there is any place to be opinionated it is on your personal site, so have fun sifting through the recesses of my brain, sometimes there's a cool technical related thing somewhere around.
