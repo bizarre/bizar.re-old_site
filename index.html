@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" hidden>
+  <head>
+    <meta charset="utf-8" />
+    <title>bizar.re</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Start Single Page Apps for GitHub Pages -->
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      // This script checks to see if a redirect is present in the query string,
+      // converts it back into the correct url and adds it to the
+      // browser's history using window.history.replaceState(...),
+      // which won't cause the browser to attempt to load the new url.
+      // When the single page app is loaded further down in this file,
+      // the correct url will be waiting in the browser's history for
+      // the single page app to route accordingly.
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      })(window.location);
+    </script>
+
+    <script type="module" src="https://cdn.skypack.dev/twind/shim"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Recursive:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/typography@0.2.x/dist/typography.min.css" />
+
+
+    <link data-trunk rel="copy-file" href="settings.yaml" />
+    <link data-trunk rel="copy-file" href=".journal" />
+    <link data-trunk rel="copy-file" href=".sketches" />
+    <link data-trunk rel="copy-file" href=".build_info" />
+    <link data-trunk rel="copy-dir" href="content" />
+    <link data-trunk rel="copy-dir" href="assets" />
+    <!--<link data-trunk rel="rust" data-wasm-opt="z" />-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link rel="prefetch" href="/.journal">
+    <link rel="prefetch" href="/.sketches">
+    <link rel="prefetch" href="/.build_info">
+    <style>
+      main {
+        font-family: "Recursive", monospace;
+      }
+
+      .prose pre {
+        background-color: #2d3748 !important;
+        border-radius: .375rem !important;
+        border: none !important;
+      }
+
+      .prose a:hover {
+        background: black;
+        color: white;
+      }
+
+      .prose img {
+        object-fit: contain;
+        width: 100%;
+      }
+
+      iframe {
+        border: 1px solid black;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    </head>
+  <body>
+
+  </body>
+</html>
