@@ -12,9 +12,15 @@ pub struct SketchDef(String);
 pub struct List {
   link: ComponentLink<Self>,
   error: bool,
+  props: ListProps,
   sketches: Vec<SketchDef>,
   _fetch: FetchTask,
   _timeout: TimeoutTask
+}
+
+#[derive(Properties, Clone, PartialEq)]
+pub struct ListProps {
+  pub settings: crate::settings::Settings
 }
 
 pub enum Msg {
@@ -24,9 +30,9 @@ pub enum Msg {
 
 impl Component for List {
   type Message = Msg;
-  type Properties = ();
+  type Properties = ListProps;
 
-  fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
+  fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
     let request = Request::get("/.sketches.json")
     .body(Nothing)
     .expect("Failed to build request.");
@@ -39,7 +45,7 @@ impl Component for List {
       Msg::Error
     }));
 
-    Self { link, error: false, sketches: Vec::new(), _fetch, _timeout }
+    Self { link, error: false, sketches: Vec::new(), _fetch, _timeout, props }
   }
 
   fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -65,6 +71,7 @@ impl Component for List {
     html!{
       <div>
         <h1 class=classes!("lowercase", "mt-4", "font-medium", "text-lg")>{ "Sketches" }</h1>
+        <small class=classes!("lowercase", "text-gray-500")>{ &self.props.settings.sketches_subtitle }</small>
         <ul class=classes!("mt-2", "grid", "grid-cols-2", "md:grid-cols-4", "gap-4")>
         { sketches.iter().map(|sketch| html!{ <Stub sketch=sketch /> }).collect::<Html>() }
         </ul>

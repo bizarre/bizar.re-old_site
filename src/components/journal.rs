@@ -16,6 +16,7 @@ pub struct JournalEntry {
 pub struct List {
   link: ComponentLink<Self>,
   error: bool,
+  props: ListProps,
   entries: Vec<JournalEntry>,
   _fetch: FetchTask,
   _timeout: TimeoutTask
@@ -26,11 +27,16 @@ pub enum Msg {
   Error
 }
 
+#[derive(Properties, Clone, PartialEq)]
+pub struct ListProps {
+  pub settings: crate::settings::Settings
+}
+
 impl Component for List {
   type Message = Msg;
-  type Properties = ();
+  type Properties = ListProps;
 
-  fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
+  fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
     let request = Request::get("/.journal.json")
     .body(Nothing)
     .expect("Failed to build request.");
@@ -43,7 +49,7 @@ impl Component for List {
       Msg::Error
     }));
 
-    Self { link, error: false, entries: Vec::new(), _fetch, _timeout }
+    Self { link, error: false, entries: Vec::new(), _fetch, _timeout, props }
   }
 
   fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -69,6 +75,7 @@ impl Component for List {
     html!{
       <div>
         <h1 class=classes!("lowercase", "mt-4", "font-medium", "text-lg")>{ "Journal" }</h1>
+        <small class=classes!("lowercase", "text-gray-500")>{ &self.props.settings.journal_subtitle }</small>
         <ul class=classes!("mt-2", "grid", "grid-cols-2", "md:grid-cols-4", "gap-4")>
           { entries.iter().map(|entry| html!{ <Stub entry=entry /> }).collect::<Html>() }
         </ul>

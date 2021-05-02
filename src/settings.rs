@@ -4,7 +4,9 @@ use serde::Deserialize;
 pub struct Settings {
   pub name: String,
   pub status: Option<Vec<String>>,
-  pub bio: String
+  pub bio: String,
+  pub journal_subtitle: String,
+  pub sketches_subtitle: String
 }
 
 impl Settings {
