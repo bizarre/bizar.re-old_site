@@ -4,9 +4,56 @@ use std::collections::HashMap;
 fn main() -> io::Result<()> {
   println!("cargo:rerun-if-changed=content"); 
   println!("cargo:rerun-if-changed=build.rs");
+
   
+  plot_build_information()?;
   plot_journal_entries()?;
   plot_sketches()?;
+
+  Ok(())
+}
+
+fn plot_build_information() -> io::Result<()> {
+  let repo = match git2::Repository::open(".") {
+    Ok(repo) => repo,
+    Err(err) => panic!("failed to open: {}", err),
+  };
+
+  #[derive(Debug, serde::Serialize)]
+  struct BuildInfo {
+    git_remote: Option<String>,
+    git_commit_id: String,
+    git_author_name: String,
+    git_author_email: String,
+    git_commit_summary: String,
+    git_commit_time: i64
+  }
+
+  if let Ok(head) = repo.head() {
+    if let Ok(commit) = head.peel_to_commit() {
+      let author = commit.author();
+      let mut remote = None;
+
+      if let Ok(origin) = repo.find_remote("origin") {
+          if let Some(url) = origin.url() {
+            remote = Some(url.to_owned());
+          }
+      }
+
+      let build_info = BuildInfo {
+        git_remote: remote,
+        git_commit_id: commit.id().to_string(),
+        git_author_name: author.name().unwrap_or("unknown").to_string(),
+        git_author_email: author.email().unwrap_or("unknown email").to_string(),
+        git_commit_summary: commit.summary().unwrap_or("").to_string(),
+        git_commit_time: commit.time().seconds()
+      };
+
+      serde_json::to_writer(&fs::File::create(".build_info")?, &build_info).unwrap();
+    
+      
+    }
+  }
 
   Ok(())
 }
@@ -21,7 +68,7 @@ fn plot_sketches() -> io::Result<()> {
 
   let names = paths.iter().map(|path| path.as_path().file_name().unwrap().to_str().unwrap()).collect::<Vec<&str>>();
 
-  serde_json::to_writer(&fs::File::create(".sketches.json")?, &names).unwrap();
+  serde_json::to_writer(&fs::File::create(".sketches")?, &names).unwrap();
 
   Ok(())
 }
@@ -79,7 +126,7 @@ fn plot_journal_entries() -> io::Result<()> {
     entries.push(entry);
   }
 
-  serde_json::to_writer(&fs::File::create(".journal.json")?, &entries).unwrap();
+  serde_json::to_writer(&fs::File::create(".journal")?, &entries).unwrap();
 
   Ok(())
 }

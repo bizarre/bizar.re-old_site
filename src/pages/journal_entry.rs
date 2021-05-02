@@ -34,7 +34,7 @@ impl Component for JournalEntry {
   type Properties = Props;
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-    let request = Request::get("/.journal.json")
+    let request = Request::get("/.journal")
     .body(Nothing)
     .expect("Failed to build request.");
 

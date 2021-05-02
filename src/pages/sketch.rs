@@ -36,7 +36,7 @@ impl Component for Sketch {
   type Properties = Props;
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-    let request = Request::get("/.sketches.json")
+    let request = Request::get("/.sketches")
     .body(Nothing)
     .expect("Failed to build request.");
 

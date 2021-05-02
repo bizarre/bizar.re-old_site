@@ -9,6 +9,7 @@ use settings::Settings;
 use yew_services::{fetch::{FetchService, FetchTask, Request, Response}, timeout::{TimeoutService, TimeoutTask}};
 use yew::format::{Nothing, Text};
 use std::time::Duration;
+use serde::Deserialize;
 
 use router::{AppRouter, AppRoute};
 
@@ -18,18 +19,30 @@ use wee_alloc;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+#[derive(Debug, Deserialize, Clone, PartialEq)]
+pub struct BuildInfo {
+  git_remote: Option<String>,
+  git_commit_id: String,
+  git_author_name: String,
+  git_author_email: String,
+  git_commit_summary: String,
+  git_commit_time: i64
+}
+
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-  pub settings: Option<Settings>
+  pub settings: Option<Settings>,
+  pub build_info: Option<BuildInfo>
 }
 
 enum Msg {
   LoadSettings(Settings),
+  LoadBuildInfo(BuildInfo),
   Error
 }
 struct Model {
   _link: ComponentLink<Self>,
-  _fetch: FetchTask,
+  _fetches: Vec<FetchTask>,
   _timeout: TimeoutTask,
   props: Props,
   error: bool
@@ -37,7 +50,7 @@ struct Model {
 
 impl Default for Props {
   fn default() -> Self {
-    Self { settings: None }
+    Self { settings: None, build_info: None }
   }
 }
 
@@ -46,20 +59,26 @@ impl Component for Model {
   type Properties = Props;
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-    let request = Request::get("/settings.yaml")
+    let settings_request = Request::get("/settings.yaml")
+    .body(Nothing)
+    .expect("Failed to build request.");
+
+    let build_info_request = Request::get("/.build_info")
     .body(Nothing)
     .expect("Failed to build request.");
 
 
-    let _fetch = FetchService::fetch(request, link.callback(|response: Response<Text>| {
+    let fetches = vec![FetchService::fetch(settings_request, link.callback(|response: Response<Text>| {
       Msg::LoadSettings(Settings::new(response.body().as_ref().unwrap()))
-    })).unwrap();
+    })).unwrap(), FetchService::fetch(build_info_request, link.callback(|response: Response<Text>| {
+      Msg::LoadBuildInfo(serde_json::from_str(response.body().as_ref().unwrap()).unwrap())
+    })).unwrap()];
 
     let _timeout = TimeoutService::spawn(Duration::new(5, 0), link.callback(|_res| {
       Msg::Error
     }));
 
-    Self { props, _link: link, _fetch, _timeout, error: false }
+    Self { props, _link: link, _fetches: fetches, _timeout, error: false }
   }
 
   fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -68,6 +87,12 @@ impl Component for Model {
         self.props.settings = Some(settings);
         true
       },
+
+      Msg::LoadBuildInfo(build_info) => {
+        self.props.build_info = Some(build_info);
+        true
+      }
+
       Msg::Error => {
         self.error = true;
         true
@@ -81,9 +106,10 @@ impl Component for Model {
 
   fn view(&self) -> Html {
     let settings = self.props.settings.clone();
+    let build_info = self.props.build_info.clone();
    
     html! {
-      <main class=classes!("h-screen", "w-screen", "flex", "p-4", "md:w-2/3", "md:m-auto", "md:px-0", "md:pt-40")>
+      <main class=classes!("h-screen", "w-screen", "flex", "p-4", "md:w-2/3", "md:m-auto", "md:px-0", "md:pt-40", "flex-wrap")>
       { if settings.is_some() { 
           html! {
           <AppRouter
@@ -124,6 +150,36 @@ impl Component for Model {
             <h1>{ "..." }</h1>
           }
         }}
+      }}
+      // this should probs be moved into its own component.
+      // very ugly rn
+      { if build_info.is_some() {
+        let info = build_info.unwrap();
+        let date = js_sys::Date::new_0();
+        date.set_time((info.git_commit_time * 1000) as f64);
+        html! {
+          <footer class=classes!("w-full", "cursor-default")>
+            <small class=classes!("text-gray-300", "block")>
+              { "built w/ \u{2764} in rust via " }
+              <a class=classes!("hover:bg-black", "hover:text-white", "underline") href={"https://github.com/yewstack/yew"}>{ "yew" }</a>
+            </small>
+            <small class=classes!("text-gray-300", "block")>
+              { "last commit " }
+              <a class=classes!("hover:bg-black", "hover:text-white", "underline") href={format!{"{}/commit/{}", info.git_remote.unwrap_or("https://github.com/bizarre/bizarre".to_owned()), info.git_commit_id}}>{ format!("[{}]", info.git_commit_id.chars().take(7).collect::<String>()) }</a>
+              { " by " }
+              <strong>{ format!("{} ({})", info.git_author_name, info.git_author_email) }</strong>
+              { " on " }
+              <span>{ date.to_date_string().as_string().unwrap() }</span>
+              { " at " }
+              <span>{ date.to_locale_time_string("en-US").as_string().unwrap() }</span>
+              { ": " }
+              <strong>{ format!("\"{}\"", info.git_commit_summary) }</strong>
+              // { format!("last commit [{}] by {} ({}) on {} at {}: '{}'", info.git_commit_id.chars().take(7).collect::<String>(), info.git_author_name, info.git_author_email, date.to_date_string().as_string().unwrap(), date.to_locale_time_string("en-US").as_string().unwrap(), info.git_commit_summary)}
+            </small>
+          </footer>
+        }
+      } else {
+        html! {<></>}
       }}
       </main>
     }
