@@ -5,9 +5,22 @@ fn main() -> io::Result<()> {
   println!("cargo:rerun-if-changed=content"); 
   println!("cargo:rerun-if-changed=build.rs");
 
+  plot_shots()?;
   plot_build_information()?;
   plot_journal_entries()?;
   plot_sketches()?;
+
+  Ok(())
+}
+
+fn plot_shots() -> io::Result<()> {
+  let mut paths = fs::read_dir("assets/images/shots")?
+  .map(|res| res.map(|e| e.path()))
+  .collect::<Result<Vec<_>, io::Error>>()?;
+
+  let names = paths.iter().map(|path| format!("/{}", path.to_str().unwrap())).collect::<Vec<String>>();
+
+  serde_json::to_writer(&fs::File::create(".shots")?, &names).unwrap();
 
   Ok(())
 }
@@ -49,8 +62,6 @@ fn plot_build_information() -> io::Result<()> {
       };
 
       serde_json::to_writer(&fs::File::create(".build_info")?, &build_info).unwrap();
-    
-      
     }
   }
 

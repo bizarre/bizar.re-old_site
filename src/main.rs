@@ -32,12 +32,14 @@ pub struct BuildInfo {
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
   pub settings: Option<Settings>,
-  pub build_info: Option<BuildInfo>
+  pub build_info: Option<BuildInfo>,
+  pub shots: Vec<String>
 }
 
 enum Msg {
   LoadSettings(Settings),
   LoadBuildInfo(BuildInfo),
+  LoadShots(Vec<String>),
   Error
 }
 struct Model {
@@ -50,7 +52,7 @@ struct Model {
 
 impl Default for Props {
   fn default() -> Self {
-    Self { settings: None, build_info: None }
+    Self { settings: None, build_info: None, shots: vec![] }
   }
 }
 
@@ -69,10 +71,16 @@ impl Component for Model {
     .body(Nothing)
     .expect("Failed to build request.");
 
+    let shots_request = Request::get(&format!("/.shots?{}", current_time_millis))
+    .body(Nothing)
+    .expect("Failed to build request.");
+
     let fetches = vec![FetchService::fetch(settings_request, link.callback(|response: Response<Text>| {
       Msg::LoadSettings(Settings::new(response.body().as_ref().unwrap()))
     })).unwrap(), FetchService::fetch(build_info_request, link.callback(|response: Response<Text>| {
       Msg::LoadBuildInfo(serde_json::from_str(response.body().as_ref().unwrap()).unwrap())
+    })).unwrap(), FetchService::fetch(shots_request, link.callback(|response: Response<Text>| {
+      Msg::LoadShots(serde_json::from_str(response.body().as_ref().unwrap()).unwrap())
     })).unwrap()];
 
     let _timeout = TimeoutService::spawn(Duration::new(5, 0), link.callback(|_res| {
@@ -87,10 +95,15 @@ impl Component for Model {
       Msg::LoadSettings(settings) => {
         self.props.settings = Some(settings);
         true
-      },
+      }
 
       Msg::LoadBuildInfo(build_info) => {
         self.props.build_info = Some(build_info);
+        true
+      }
+
+      Msg::LoadShots(shots) => {
+        self.props.shots = shots;
         true
       }
 
@@ -107,6 +120,7 @@ impl Component for Model {
 
   fn view(&self) -> Html {
     let settings = self.props.settings.clone();
+    let shots = self.props.shots.clone();
     let build_info = self.props.build_info.clone();
 
     if build_info.is_none() {
@@ -128,7 +142,7 @@ impl Component for Model {
               render=AppRouter::render(move |route: AppRoute| {
                 match route {
                   AppRoute::Home => {
-                    html! { <pages::Home settings=settings.clone().unwrap() snowflake=snowflake /> }
+                    html! { <pages::Home settings=settings.clone().unwrap() snowflake=snowflake shots=shots.clone() /> }
                   }
             
                   AppRoute::PageNotFound(Permissive(route)) => {
@@ -167,11 +181,11 @@ impl Component for Model {
       // very ugly rn
         <footer class=classes!("w-full", "cursor-default", "pb-8", "flex-1", "flex", "items-end")>
           <div>
-            <small class=classes!("text-gray-300", "block")>
+            <small class=classes!("text-gray-400", "block")>
               { "built w/ \u{2764} in rust via " }
               <a class=classes!("hover:bg-black", "hover:text-white", "underline") href={"https://github.com/yewstack/yew"}>{ "yew" }</a>
             </small>
-            <small class=classes!("text-gray-300", "block")>
+            <small class=classes!("text-gray-400", "block")>
               { "latest commit " }
               <a class=classes!("hover:bg-black", "hover:text-white", "underline") href={format!{"{}/commit/{}", info.git_remote.unwrap_or("https://github.com/bizarre/bizarre".to_owned()), info.git_commit_id}}>{ format!("[{}]", info.git_commit_id.chars().take(7).collect::<String>()) }</a>
               { " by " }
@@ -182,7 +196,6 @@ impl Component for Model {
               <span>{ date.to_locale_time_string("en-US").as_string().unwrap() }</span>
               { ": " }
               <strong>{ format!("\"{}\"", info.git_commit_summary) }</strong>
-              // { format!("last commit [{}] by {} ({}) on {} at {}: '{}'", info.git_commit_id.chars().take(7).collect::<String>(), info.git_author_name, info.git_author_email, date.to_date_string().as_string().unwrap(), date.to_locale_time_string("en-US").as_string().unwrap(), info.git_commit_summary)}
             </small>
           </div>
         </footer>
