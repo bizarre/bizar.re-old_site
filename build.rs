@@ -2,7 +2,8 @@ use std::{fs, io};
 use std::collections::HashMap;
 
 fn main() -> io::Result<()> {
-  println!("cargo:rerun-if-changed=content"); 
+  println!("cargo:rerun-if-changed=content");
+  println!("cargo:rerun-if-changed=assets");
   println!("cargo:rerun-if-changed=build.rs");
 
   plot_shots()?;
