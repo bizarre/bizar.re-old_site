@@ -1,0 +1,27 @@
+{
+  "name": "Tavern",
+  "summary": "",
+  "overview": "",
+  "roles": [ "Engineer" ],
+  "team": [
+    {
+      "name": "Anthony Morris",
+      "role": "Engineer",
+      "link": "https://anthonymorris.dev"
+    },
+    {
+      "name": "Jet Simon",
+      "role": "Engineer & Designer",
+      "link": "http://jetsimon.com"
+    },
+    {
+      "name": "Alice Zhao",
+      "role": "Engineer",
+      "link": "https://alicezhao.com"
+    }
+  ],
+  "date": "January 2021",
+  "sections": [
+    "background"
+  ]
+}

@@ -1,46 +1,76 @@
 use std::{fs, io};
 use std::collections::HashMap;
 
+#[derive(Debug, serde::Serialize)]
+struct BuildInfo {
+  git_remote: Option<String>,
+  git_commit_id: String,
+  git_author_name: String,
+  git_author_email: String,
+  git_commit_summary: String,
+  git_commit_time: i64
+}
+
+#[derive(Debug, serde::Serialize)]
+struct AppData {
+  pub projects: Vec<String>,
+  pub shots: Vec<String>,
+  pub build_info: Option<BuildInfo>,
+  pub sketches: Vec<String>,
+  pub journal_entries: Vec<HashMap<String, String>>
+}
+
+impl Default for AppData {
+  fn default() -> Self {
+    Self { projects: vec![], shots: vec![], build_info: None, sketches: vec![], journal_entries: vec![] }
+  }
+}
+
 fn main() -> io::Result<()> {
-  println!("cargo:rerun-if-changed=content");
+  println!("cargo:rerun-if-changed=content"); 
   println!("cargo:rerun-if-changed=assets");
   println!("cargo:rerun-if-changed=build.rs");
 
-  plot_shots()?;
-  plot_build_information()?;
-  plot_journal_entries()?;
-  plot_sketches()?;
+  let mut app_data = AppData::default();
+
+  plot_projects(&mut app_data)?;
+  plot_shots(&mut app_data)?;
+  plot_build_information(&mut app_data)?;
+  plot_journal_entries(&mut app_data)?;
+  plot_sketches(&mut app_data)?;
+
+  serde_json::to_writer(&fs::File::create("site.json")?, &app_data).unwrap();
 
   Ok(())
 }
 
-fn plot_shots() -> io::Result<()> {
+fn plot_projects(app_data: &mut AppData) -> io::Result<()> {
+  let mut paths = fs::read_dir("content/projects")?
+        .map(|res| res.map(|e| e.path()))
+        .collect::<Result<Vec<_>, io::Error>>()?;
+
+  paths.sort_by(|f1, f2| fs::metadata(f1).unwrap().created().unwrap().cmp(&fs::metadata(f2).unwrap().created().unwrap()));
+
+  app_data.projects = paths.iter().map(|path| path.as_path().file_name().unwrap().to_str().unwrap().to_owned()).collect::<Vec<String>>();
+
+  Ok(())
+}
+
+fn plot_shots(app_data: &mut AppData) -> io::Result<()> {
   let mut paths = fs::read_dir("assets/images/shots")?
   .map(|res| res.map(|e| e.path()))
   .collect::<Result<Vec<_>, io::Error>>()?;
 
-  let names = paths.iter().map(|path| format!("/{}", path.to_str().unwrap())).collect::<Vec<String>>();
-
-  serde_json::to_writer(&fs::File::create(".shots")?, &names).unwrap();
+  app_data.shots = paths.iter().map(|path| format!("/{}", path.to_str().unwrap())).collect::<Vec<String>>();
 
   Ok(())
 }
 
-fn plot_build_information() -> io::Result<()> {
+fn plot_build_information(app_data: &mut AppData) -> io::Result<()> {
   let repo = match git2::Repository::open(".") {
     Ok(repo) => repo,
     Err(err) => panic!("failed to open: {}", err),
   };
-
-  #[derive(Debug, serde::Serialize)]
-  struct BuildInfo {
-    git_remote: Option<String>,
-    git_commit_id: String,
-    git_author_name: String,
-    git_author_email: String,
-    git_commit_summary: String,
-    git_commit_time: i64
-  }
 
   if let Ok(head) = repo.head() {
     if let Ok(commit) = head.peel_to_commit() {
@@ -62,7 +92,7 @@ fn plot_build_information() -> io::Result<()> {
         git_commit_time: commit.time().seconds()
       };
 
-      serde_json::to_writer(&fs::File::create(".build_info")?, &build_info).unwrap();
+      app_data.build_info = Some(build_info);
     }
   }
 
@@ -70,21 +100,19 @@ fn plot_build_information() -> io::Result<()> {
 }
 
 
-fn plot_sketches() -> io::Result<()> {
+fn plot_sketches(app_data: &mut AppData) -> io::Result<()> {
   let mut paths = fs::read_dir("content/sketches")?
         .map(|res| res.map(|e| e.path()))
         .collect::<Result<Vec<_>, io::Error>>()?;
 
   paths.sort_by(|f1, f2| fs::metadata(f1).unwrap().created().unwrap().cmp(&fs::metadata(f2).unwrap().created().unwrap()));
 
-  let names = paths.iter().map(|path| path.as_path().file_name().unwrap().to_str().unwrap()).collect::<Vec<&str>>();
-
-  serde_json::to_writer(&fs::File::create(".sketches")?, &names).unwrap();
+  app_data.sketches = paths.iter().map(|path| path.as_path().file_name().unwrap().to_str().unwrap().to_owned()).collect::<Vec<String>>();
 
   Ok(())
 }
 
-fn plot_journal_entries() -> io::Result<()> {
+fn plot_journal_entries(app_data: &mut AppData) -> io::Result<()> {
   let mut paths = fs::read_dir("content/journal")?
         .map(|res| res.map(|e| e.path()))
         .collect::<Result<Vec<_>, io::Error>>()?;
@@ -137,7 +165,7 @@ fn plot_journal_entries() -> io::Result<()> {
     entries.push(entry);
   }
 
-  serde_json::to_writer(&fs::File::create(".journal")?, &entries).unwrap();
+  app_data.journal_entries = entries;
 
   Ok(())
 }

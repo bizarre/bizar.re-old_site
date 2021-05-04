@@ -12,10 +12,8 @@ use yew_router::{agent::{RouteAgent, RouteRequest}, route::Route};
 pub struct Sketch {
   link: ComponentLink<Self>,
   body: Option<String>,
-  script: Option<String>,
   props: Props,
-  _fetches: Vec<FetchTask>,
-  _timeout: TimeoutTask
+  _fetches: Vec<FetchTask>
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -25,11 +23,7 @@ pub struct Props {
 }
 
 pub enum Msg {
-  NotFound,
-  Load,
-  ApplyBody(String),
-  ApplyScript(String),
-  Error
+  ApplyBody(String)
 }
 
 impl Component for Sketch {
@@ -37,69 +31,25 @@ impl Component for Sketch {
   type Properties = Props;
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-    let request = Request::get(&format!("/.sketches?{}", props.snowflake))
+    let mut fetches = vec![];
+
+    let body_request = Request::get(format!("/content/sketches/{}/README.md?{}", props.sketch, props.snowflake))
     .body(Nothing)
     .expect("Failed to build request.");
 
-    let cloned = props.clone();
-
-    let _fetch = FetchService::fetch(request, link.callback(move |response: Response<Text>| {
-      let sketches: Vec<String> = serde_json::from_str(response.body().as_ref().unwrap()).unwrap();
-      for sketch in sketches {
-        if sketch == cloned.sketch {
-          return Msg::Load
-        }
-      } 
-
-      Msg::NotFound
+    let fetch_body = FetchService::fetch(body_request, link.callback(|response: Response<Text>| {
+      Msg::ApplyBody(response.body().as_ref().unwrap().to_owned())
     })).unwrap();
 
-    let _timeout = TimeoutService::spawn(Duration::new(5, 0), link.callback(|_res| {
-      Msg::Error
-    }));
+    fetches.push(fetch_body);
 
-    let _fetches = vec![_fetch];
-
-    Self { link, props, body: None, script: None, _fetches, _timeout }
+    Self { link, props, body: None, _fetches: fetches }
   }
 
   fn update(&mut self, msg: Self::Message) -> ShouldRender {
     match msg {
-      Msg::NotFound => {
-        RouteAgent::dispatcher().send(RouteRequest::ChangeRoute(Route { route: "/page-not-found".to_owned(), state: () }));
-        false
-      }
-
-      Msg::Load => {
-        let body_request = Request::get(format!("/content/sketches/{}/README.md?{}", self.props.sketch, self.props.snowflake))
-        .body(Nothing)
-        .expect("Failed to build request.");
-
-        let script_request = Request::get(format!("/content/sketches/{}/script.js?{}", self.props.sketch, self.props.snowflake))
-        .body(Nothing)
-        .expect("Failed to build request.");
-
-        let fetch_body = FetchService::fetch(body_request, self.link.callback(|response: Response<Text>| {
-          Msg::ApplyBody(response.body().as_ref().unwrap().to_owned())
-        })).unwrap();
-
-        let fetch_script = FetchService::fetch(script_request, self.link.callback(|response: Response<Text>| {
-          Msg::ApplyScript(response.body().as_ref().unwrap().to_owned())
-        })).unwrap();
-
-        self._fetches.push(fetch_body);
-        self._fetches.push(fetch_script);
-    
-        false
-      }
-
       Msg::ApplyBody(body) => {
         self.body = Some(markdown::to_html(&body));
-        true
-      }
-
-      Msg::ApplyScript(script) => {
-        self.script = Some(script);
         true
       }
 
