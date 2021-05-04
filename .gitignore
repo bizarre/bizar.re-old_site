@@ -1,7 +1,4 @@
 /target
 /dist
-.journal*
-.sketches*
-.build_info*
 .DS_Store
-.shots*
+site.json

@@ -1,16 +1,22 @@
 use yew::prelude::*;
 use yew_functional::function_component;
 use crate::router::{AppAnchor, AppRoute};
+use crate::components::journal::JournalEntry;
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
   pub settings: crate::settings::Settings,
-  pub snowflake: i64,
-  pub shots: Vec<String>
+  pub app_data: crate::AppData
 }
 
 #[function_component(Home)]
 pub fn home(props: &Props) -> Html {
+  let entries = props.app_data.journal_entries.iter().map(|entry| { 
+    JournalEntry::new(entry.get("date").unwrap().to_string(), entry.get("_path").unwrap().to_string()) 
+  }).collect::<Vec<JournalEntry>>();
+
+  let sketches = props.app_data.clone().sketches;
+
   html! {
     <>
       <div>
@@ -43,15 +49,15 @@ pub fn home(props: &Props) -> Html {
         </div>
         <div class=classes!("flex", "flex-col")>
           <div class=classes!("flex", "w-full", "items-center", "justify-between", "mt-8")>
-            { props.shots.iter().map(|src| html!{
+            { props.app_data.shots.iter().map(|src| html!{
               <div class=classes!("flex-1", "odd:hidden", "p-0.5", "md:odd:inline-block", "md:px-2", "last:pr-0", "first:pl-0", "filter", "transition", "grayscale", "opacity-90", "hover:grayscale-0", "hover:opacity-100", "cursor-pointer")>
                 <img class=classes!("object-scale-down") src=src />
               </div>
             }).collect::<Html>() }
           </div>
           <div class=classes!("grid", "grid-cols-1", "gap-0", "md:grid-cols-2", "md:gap-8", "mt-4")>
-            <crate::components::journal::List settings=&props.settings.clone() snowflake=props.snowflake />
-            <crate::components::sketches::List settings=&props.settings.clone() snowflake=props.snowflake />
+            <crate::components::journal::List settings=&props.settings.clone() entries=entries />
+            <crate::components::sketches::List settings=&props.settings.clone() sketches=sketches />
           </div>
         </div>
       </div>

@@ -6,64 +6,39 @@ use std::time::Duration;
 use yew_functional::function_component;
 use crate::router::{AppAnchor, AppRoute};
 
-#[derive(Deserialize, Clone, PartialEq)]
+#[derive(Clone, PartialEq)]
 pub struct JournalEntry {
   pub date: String,
-  #[serde(rename = "_path")]
   pub path: String
+}
+
+impl JournalEntry {
+  pub fn new(date: String, path: String) -> Self {
+    Self { date, path }
+  }
 }
 
 pub struct List {
   link: ComponentLink<Self>,
-  error: bool,
-  props: ListProps,
-  entries: Vec<JournalEntry>,
-  _fetch: FetchTask,
-  _timeout: TimeoutTask
-}
-
-pub enum Msg {
-  Init(Vec<JournalEntry>),
-  Error
+  props: ListProps
 }
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct ListProps {
   pub settings: crate::settings::Settings,
-  pub snowflake: i64
+  pub entries: Vec<JournalEntry>
 }
 
 impl Component for List {
-  type Message = Msg;
+  type Message = ();
   type Properties = ListProps;
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-    let request = Request::get(&format!("/.journal?{}", props.snowflake))
-    .body(Nothing)
-    .expect("Failed to build request.");
-
-    let _fetch = FetchService::fetch(request, link.callback(|response: Response<Text>| {
-      Msg::Init(serde_json::from_str(response.body().as_ref().unwrap()).unwrap())
-    })).unwrap();
-
-    let _timeout = TimeoutService::spawn(Duration::new(5, 0), link.callback(|_res| {
-      Msg::Error
-    }));
-
-    Self { link, error: false, entries: Vec::new(), _fetch, _timeout, props }
+    Self { link, props }
   }
 
   fn update(&mut self, msg: Self::Message) -> ShouldRender {
-    match msg {
-      Msg::Init(entries) => {
-        self.entries = entries;
-        true
-      },
-      Msg::Error => {
-        self.error = true;
-        true
-      }
-    }
+    false
   }
 
   fn change(&mut self, _props: Self::Properties) -> ShouldRender {
@@ -71,7 +46,7 @@ impl Component for List {
   }
 
   fn view(&self) -> Html {
-    let entries = &self.entries;
+    let entries = &self.props.entries;
    
     html!{
       <div>

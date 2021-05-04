@@ -10,6 +10,8 @@ use yew_services::{fetch::{FetchService, FetchTask, Request, Response}, timeout:
 use yew::format::{Nothing, Text};
 use std::time::Duration;
 use serde::Deserialize;
+use yew_router::{agent::{RouteAgent, RouteRequest}};
+use std::collections::HashMap;
 
 use router::{AppRouter, AppRoute};
 
@@ -29,17 +31,24 @@ pub struct BuildInfo {
   git_commit_time: i64
 }
 
+#[derive(Debug, Deserialize, Clone, PartialEq)]
+pub struct AppData {
+  pub projects: Vec<String>,
+  pub shots: Vec<String>,
+  pub build_info: BuildInfo,
+  pub sketches: Vec<String>,
+  pub journal_entries: Vec<HashMap<String, String>>
+}
+
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
   pub settings: Option<Settings>,
-  pub build_info: Option<BuildInfo>,
-  pub shots: Vec<String>
+  pub app_data: Option<AppData>
 }
 
 enum Msg {
   LoadSettings(Settings),
-  LoadBuildInfo(BuildInfo),
-  LoadShots(Vec<String>),
+  LoadAppData(AppData),
   Error
 }
 struct Model {
@@ -52,7 +61,7 @@ struct Model {
 
 impl Default for Props {
   fn default() -> Self {
-    Self { settings: None, build_info: None, shots: vec![] }
+    Self { settings: None, app_data: None }
   }
 }
 
@@ -67,20 +76,14 @@ impl Component for Model {
     .body(Nothing)
     .expect("Failed to build request.");
 
-    let build_info_request = Request::get(&format!("/.build_info?{}", current_time_millis))
-    .body(Nothing)
-    .expect("Failed to build request.");
-
-    let shots_request = Request::get(&format!("/.shots?{}", current_time_millis))
+    let data_request = Request::get(&format!("/site.json?{}", current_time_millis))
     .body(Nothing)
     .expect("Failed to build request.");
 
     let fetches = vec![FetchService::fetch(settings_request, link.callback(|response: Response<Text>| {
       Msg::LoadSettings(Settings::new(response.body().as_ref().unwrap()))
-    })).unwrap(), FetchService::fetch(build_info_request, link.callback(|response: Response<Text>| {
-      Msg::LoadBuildInfo(serde_json::from_str(response.body().as_ref().unwrap()).unwrap())
-    })).unwrap(), FetchService::fetch(shots_request, link.callback(|response: Response<Text>| {
-      Msg::LoadShots(serde_json::from_str(response.body().as_ref().unwrap()).unwrap())
+    })).unwrap(), FetchService::fetch(data_request, link.callback(|response: Response<Text>| {
+      Msg::LoadAppData(serde_json::from_str(response.body().as_ref().unwrap()).unwrap())
     })).unwrap()];
 
     let _timeout = TimeoutService::spawn(Duration::new(5, 0), link.callback(|_res| {
@@ -97,13 +100,8 @@ impl Component for Model {
         true
       }
 
-      Msg::LoadBuildInfo(build_info) => {
-        self.props.build_info = Some(build_info);
-        true
-      }
-
-      Msg::LoadShots(shots) => {
-        self.props.shots = shots;
+      Msg::LoadAppData(app_data) => {
+        self.props.app_data = Some(app_data);
         true
       }
 
@@ -120,19 +118,20 @@ impl Component for Model {
 
   fn view(&self) -> Html {
     let settings = self.props.settings.clone();
-    let shots = self.props.shots.clone();
-    let build_info = self.props.build_info.clone();
+    let app_data = self.props.app_data.clone();
 
-    if build_info.is_none() {
+    if app_data.is_none() {
       return html! { 
         <h1>{ "..." }</h1>
       };
     }
-
-    let info = build_info.unwrap();
+    
+    let app_data = app_data.unwrap();
+    let info = app_data.clone().build_info;
     let date = js_sys::Date::new_0();
     date.set_time((info.git_commit_time * 1000) as f64);
     let snowflake = info.git_commit_time;
+    let shots = &app_data.shots;
    
     html! {
       <main class=classes!("h-screen", "w-screen", "flex", "flex-col", "p-4", "md:w-2/3", "md:m-auto", "md:px-0", "md:pt-40")>
@@ -142,7 +141,7 @@ impl Component for Model {
               render=AppRouter::render(move |route: AppRoute| {
                 match route {
                   AppRoute::Home => {
-                    html! { <pages::Home settings=settings.clone().unwrap() snowflake=snowflake shots=shots.clone() /> }
+                    html! { <pages::Home settings=settings.clone().unwrap() app_data=app_data.clone() /> }
                   }
             
                   AppRoute::PageNotFound(Permissive(route)) => {
@@ -154,11 +153,29 @@ impl Component for Model {
                   }
 
                   AppRoute::JournalEntry(date) => {
-                    html! { <pages::JournalEntry date=date snowflake=snowflake /> }
+                    let mut entry = None;
+                    for other in app_data.clone().journal_entries {
+                      if other.get("date").unwrap().to_string() == date {
+                        entry = Some(other);
+                        break;
+                      }
+                    }
+
+                    if entry.is_none() {
+                      RouteAgent::dispatcher().send(RouteRequest::ChangeRoute(Route { route: "/page-not-found".to_owned(), state: () }));
+                      return html! {<></>}
+                    }
+
+                    html! { <pages::JournalEntry date=date snowflake=snowflake path=entry.unwrap().get("_path").unwrap().to_owned() /> }
                   }
 
                   AppRoute::Sketch(sketch) => {
-                    html! { <pages::Sketch sketch=sketch snowflake=snowflake /> }
+                    if (app_data.sketches.contains(&sketch)) {
+                      return html! { <pages::Sketch sketch=sketch snowflake=snowflake /> }
+                    }
+
+                    RouteAgent::dispatcher().send(RouteRequest::ChangeRoute(Route { route: "/page-not-found".to_owned(), state: () }));
+                    html! {<></>}
                   }
                 }
               })
