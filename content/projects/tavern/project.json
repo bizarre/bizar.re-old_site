@@ -1,18 +1,21 @@
 {
   "name": "Tavern",
-  "summary": "",
-  "overview": "",
+  "summary": "Teamed up w/ some awesome people to create a fun alternative to the typical leetcode grind through gamification and a social roleplaying experience. ",
+  "tagline": "Gamified coding challenges",
+  "overview": "A web app that improves the traditional experience of practicing coding challenges by introducing social RPG elements.",
+  "image": "/assets/images/tavern/header.png",
   "roles": [ "Engineer" ],
+  "tags": ["hack", "web dev"],
   "team": [
     {
-      "name": "Anthony Morris",
-      "role": "Engineer",
-      "link": "https://anthonymorris.dev"
+      "name": "Jet Simon",
+      "role": "Engineer & Art Design",
+      "link": "http://jetsimon.com"
     },
     {
-      "name": "Jet Simon",
-      "role": "Engineer & Designer",
-      "link": "http://jetsimon.com"
+      "name": "Anthony Morris",
+      "role": "Engineer & UI/UX Design",
+      "link": "https://anthonymorris.dev"
     },
     {
       "name": "Alice Zhao",
@@ -20,8 +23,11 @@
       "link": "https://alicezhao.com"
     }
   ],
-  "date": "January 2021",
+  "date": "January 9-10, 2021",
   "sections": [
-    "background"
+    "problem",
+    "planning",
+    "seeding",
+    "runner"
   ]
 }

@@ -27,7 +27,10 @@ pub fn home(props: &Props) -> Html {
           <div class=classes!("flex-1")>
             <div class=classes!("flex", "justify-between", "items-center")>
               <h1 class=classes!("lowercase", "font-medium", "text-lg", "flex", "items-center")>{ &props.settings.name }</h1>
-              <AppAnchor classes="hover:bg-black hover:text-white text-md ml-1 opacity-75" route=AppRoute::About> { "/about-me" }</AppAnchor>
+              <ul class=classes!("flex")>
+                <li><AppAnchor classes="hover:bg-black hover:text-white text-md ml-1 opacity-75 mr-3" route=AppRoute::Projects> { "/projects" }</AppAnchor></li>
+                <li><AppAnchor classes="hover:bg-black hover:text-white text-md ml-1 opacity-75" route=AppRoute::About> { "/about-me" }</AppAnchor></li>
+              </ul>
             </div>
             <div class=classes!("mt-2", "flex", "flex-col", "md:flex-row")>
             { if let Some(status) = &props.settings.status {

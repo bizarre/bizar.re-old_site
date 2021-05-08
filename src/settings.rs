@@ -6,7 +6,8 @@ pub struct Settings {
   pub status: Option<Vec<String>>,
   pub bio: String,
   pub journal_subtitle: String,
-  pub sketches_subtitle: String
+  pub sketches_subtitle: String,
+  pub projects_subtitle: String
 }
 
 impl Settings {

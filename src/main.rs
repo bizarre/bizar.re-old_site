@@ -2,6 +2,8 @@ mod settings;
 mod pages;
 mod router;
 mod components;
+mod project;
+mod util;
 
 use yew::prelude::*;
 use yew_router::{route::Route, switch::Permissive};
@@ -12,6 +14,7 @@ use std::time::Duration;
 use serde::Deserialize;
 use yew_router::{agent::{RouteAgent, RouteRequest}};
 use std::collections::HashMap;
+use project::Project;
 
 use router::{AppRouter, AppRoute};
 
@@ -43,17 +46,19 @@ pub struct AppData {
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
   pub settings: Option<Settings>,
-  pub app_data: Option<AppData>
+  pub app_data: Option<AppData>,
+  pub projects: Vec<Project>
 }
 
 enum Msg {
   LoadSettings(Settings),
   LoadAppData(AppData),
+  AddProject(Project),
   Error
 }
 struct Model {
-  _link: ComponentLink<Self>,
-  _fetches: Vec<FetchTask>,
+  link: ComponentLink<Self>,
+  fetches: Vec<FetchTask>,
   _timeout: TimeoutTask,
   props: Props,
   error: bool
@@ -61,7 +66,7 @@ struct Model {
 
 impl Default for Props {
   fn default() -> Self {
-    Self { settings: None, app_data: None }
+    Self { settings: None, app_data: None, projects: vec![] }
   }
 }
 
@@ -90,7 +95,7 @@ impl Component for Model {
       Msg::Error
     }));
 
-    Self { props, _link: link, _fetches: fetches, _timeout, error: false }
+    Self { props, link, fetches, _timeout, error: false }
   }
 
   fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -101,7 +106,23 @@ impl Component for Model {
       }
 
       Msg::LoadAppData(app_data) => {
+        for project in &app_data.projects {
+          let request = Request::get(&format!("/content/projects/{}/project.json?{}", project, &app_data.build_info.git_commit_time))
+          .body(Nothing)
+          .expect("Failed to build request.");
+
+          self.fetches.push(FetchService::fetch(request, self.link.callback(|response: Response<Text>| {
+            Msg::AddProject(serde_json::from_str(response.body().as_ref().unwrap()).unwrap())
+          })).unwrap());
+        }
+
         self.props.app_data = Some(app_data);
+
+        true
+      }
+
+      Msg::AddProject(project) => {
+        self.props.projects.push(project);
         true
       }
 
@@ -119,6 +140,7 @@ impl Component for Model {
   fn view(&self) -> Html {
     let settings = self.props.settings.clone();
     let app_data = self.props.app_data.clone();
+    let projects = self.props.projects.clone();
 
     if app_data.is_none() {
       return html! { 
@@ -142,6 +164,29 @@ impl Component for Model {
                 match route {
                   AppRoute::Home => {
                     html! { <pages::Home settings=settings.clone().unwrap() app_data=app_data.clone() /> }
+                  }
+
+                  AppRoute::Projects => {
+                    html! { <pages::Projects settings=settings.clone().unwrap() projects=projects.clone() /> }
+                  }
+
+                  AppRoute::Project(name) => {
+                    let mut project = None;
+                    for other in projects.clone() {
+                      if other.name.to_lowercase() == name.to_lowercase() {
+                        project = Some(other)
+                      }
+                    }
+
+                    if project.is_none() {
+                      if projects.len() > 0 {
+                        RouteAgent::dispatcher().send(RouteRequest::ChangeRoute(Route { route: "/page-not-found".to_owned(), state: () }));
+                      }
+
+                      return html! {<></>}
+                    }
+
+                    html! { <pages::Project settings=settings.clone().unwrap() project=project.unwrap() /> }
                   }
             
                   AppRoute::PageNotFound(Permissive(route)) => {
