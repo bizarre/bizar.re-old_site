@@ -32,7 +32,7 @@ impl Component for Proj {
 
   fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
     let fetches = props.clone().project.sections.into_iter().map(|section| {
-      let request = Request::get(format!("/content/projects/{}/{}.md", &props.project.name, section))
+      let request = Request::get(format!("/content/projects/{}/{}.md", &props.project.name.to_lowercase(), section))
       .body(Nothing)
       .expect("Failed to build request.");
 
