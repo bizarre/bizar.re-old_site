@@ -123,6 +123,18 @@ impl Component for Model {
 
       Msg::AddProject(project) => {
         self.props.projects.push(project);
+        let mut to_set = vec![];
+        // sort
+        for project in self.props.clone().app_data.unwrap().projects {
+          for other in self.props.clone().projects {
+            if other.name.to_lowercase() == *project {
+              to_set.push(other);
+            }
+          }
+        }
+
+        self.props.projects = to_set;
+
         true
       }
 
