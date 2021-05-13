@@ -18,6 +18,7 @@ pub struct Link {
 
 #[derive(Deserialize, Clone, PartialEq)]
 pub struct Project {
+  pub id: i16,
   pub name: String,
   pub tags: Vec<String>,
   pub tagline: String,
