@@ -113,6 +113,23 @@ impl Component for Proj {
               } else {
                 html! {<></>}
               }}
+
+              { if let Some(links) = &project.links {
+                html! {
+                  <div class={"mb-4"}>
+                    <label class={"font-medium text-gray-500 text-sm"}>{ "Links" }</label>
+                    <ul>
+                    { links.iter().map(|link| {
+                        html! {
+                          <li><a class={"underline hover:bg-black hover:text-white"} target={"_blank"} href={&link.link}>{ &link.name }</a></li>
+                        }
+                    }).collect::<Html>() }
+                  </ul>
+                  </div>
+                }
+              } else {
+                html!{<></>}
+              }}
               <div class={"mb-4"}>
                 <label class={"font-medium text-gray-500 text-sm"}>{ "When" }</label>
                 <p>{ &project.date }</p>

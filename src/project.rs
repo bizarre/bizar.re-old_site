@@ -11,6 +11,12 @@ pub struct TeamMember {
 }
 
 #[derive(Deserialize, Clone, PartialEq)]
+pub struct Link {
+  pub name: String,
+  pub link: String
+}
+
+#[derive(Deserialize, Clone, PartialEq)]
 pub struct Project {
   pub name: String,
   pub tags: Vec<String>,
@@ -22,7 +28,8 @@ pub struct Project {
   pub team: Vec<TeamMember>,
   pub date: String,
   pub sections: Vec<String>,
-  pub link: Option<String>
+  pub link: Option<String>,
+  pub links: Option<Vec<Link>>
 }
 
 #[derive(Deserialize, Clone, PartialEq)]

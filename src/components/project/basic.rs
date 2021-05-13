@@ -27,7 +27,7 @@ pub fn basic(props: &Props) -> Html {
       }} else {
         html! {<></>}
       }}
-      <h1 class={"text-3xl lowercase mb-4 text-gray-700"}>{ section.title }</h1>
+      <h1 class={"text-4xl lowercase mb-4 text-gray-700"}>{ section.title }</h1>
       <div class=classes!(if section.extra.contains_key("align") && section.extra.get("align").unwrap() == "right" { "flex justify-end" } else { "" })>
         { section.body.render() }
       </div>
