@@ -8,6 +8,12 @@ pub enum AppRoute {
   #[at = "/about-me"]
   About,
 
+  #[at = "/projects"]
+  Projects,
+
+  #[at = "/p/{name}"]
+  Project(String),
+
   #[at = "/s/{sketch}"]
   Sketch(String),
 

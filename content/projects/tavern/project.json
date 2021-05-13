@@ -1,18 +1,31 @@
 {
   "name": "Tavern",
-  "summary": "",
-  "overview": "",
+  "summary": "Teamed up w/ some awesome people to create a fun alternative to the typical leetcode grind in 24 hours through gamification and a social roleplaying experience.",
+  "tagline": "Gamified coding challenges",
+  "overview": "A web app created for nwHacks 2021 in 24hr that improves on the traditional experience of practicing coding challenges by introducing social RPG elements.",
+  "image": "/assets/images/tavern/header.png",
   "roles": [ "Engineer" ],
-  "team": [
+  "tags": ["hack", "web dev"],
+  "links": [
     {
-      "name": "Anthony Morris",
-      "role": "Engineer",
-      "link": "https://anthonymorris.dev"
+      "name": "devpost",
+      "link": "https://devpost.com/software/tavern-2764g3"
     },
     {
+      "name": "repo",
+      "link": "https://github.com/amorriscode/tavern"
+    }
+  ],
+  "team": [
+    {
       "name": "Jet Simon",
-      "role": "Engineer & Designer",
+      "role": "Engineer & Art Design",
       "link": "http://jetsimon.com"
+    },
+    {
+      "name": "Anthony Morris",
+      "role": "Engineer & UI/UX Design",
+      "link": "https://anthonymorris.dev"
     },
     {
       "name": "Alice Zhao",
@@ -20,8 +33,11 @@
       "link": "https://alicezhao.com"
     }
   ],
-  "date": "January 2021",
+  "date": "January 9-10, 2021",
   "sections": [
-    "background"
+    "about",
+    "seed",
+    "runner",
+    "bye"
   ]
 }
