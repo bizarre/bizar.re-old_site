@@ -29,13 +29,13 @@ serde = "1.0.125"
 serde_yaml = "0.8.17"
 serde_json = "1.0.64"
 anyhow = "1.0.40"
-markdown = "0.3"
+markdown = {git = "https://github.com/bizarre/markdown.rs", branch="add-video-span"}
 web-sys = "0.3.50"
 js-sys = "0.3.50"
 wee_alloc = "0.4.5"
 
 [build-dependencies]
-markdown = "0.3"
+markdown = {git = "https://github.com/bizarre/markdown.rs", branch="add-video-span"}
 serde = "1.0.125"
 serde_json = "1.0.64"
 git2 = "0.13.20"
