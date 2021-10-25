@@ -1,4 +1,4 @@
-hi, i'm alex. i am a 21yo comp sci student currently living in victoria, bc.
+hi, i'm alex. i am a 21yo comp sci student currently living in vancouver, bc.
 
 i like to [write code](https://github.com/bizarre), take photos & i am currently teaching myself how to play guitar.
 
